@@ -28,7 +28,7 @@ steps:
 
         temp_path="/tmp/aqua-$version"
         if [ -f "$temp_path" ]; then
-          mv "$temp_path" "$install_path" || sudo mv "$temp_path" "$install_path"
+          cp "$temp_path" "$install_path" || sudo cp "$temp_path" "$install_path"
           exit 0
         fi
 
