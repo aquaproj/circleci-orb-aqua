@@ -1,0 +1,41 @@
+description: >
+  Install aqua.
+parameters:
+  aqua_root_dir:
+    type: string
+    description: >
+      aqua's root directory.
+  aqua_install_path:
+    type: string
+    default: /usr/local/bin/aqua
+    description: >
+      aqua install path
+  config:
+    type: string
+    default: aqua.yaml
+    description: >
+      aqua's configuration file path.
+  cache_version:
+    type: string
+    default: v1
+    description: >
+      cache version.
+steps:
+  - restore_cache:
+      keys:
+        - aqua-tools-<< parameters.cache_version >>-{{ checksum "<< parameters.config >>" }}
+        - aqua-tools-<< parameters.cache_version >>-
+  - run:
+      command: |
+        export "AQUA_ROOT_DIR=<< parameters.aqua_root_dir >>"
+        "<< parameters.aqua_install_path >>" -c "<< parameters.config >>" i
+  - run:
+      command: |
+        if [ -n "${BASH_ENV:-}" ]; then
+          echo 'export "AQUA_ROOT_DIR=<< parameters.aqua_root_dir >>"' >> $BASH_ENV
+          echo 'export "PATH=<< parameters.aqua_root_dir >>/bin:$PATH"' >> $BASH_ENV
+        fi
+  - save_cache:
+      key: aqua-tools-<< parameters.cache_version >>-{{ checksum "<< parameters.config >>" }}
+      paths:
+        - << parameters.aqua_root_dir >>

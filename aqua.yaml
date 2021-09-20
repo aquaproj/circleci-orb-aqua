@@ -1,0 +1,8 @@
+registries:
+- type: standard
+  ref: v0.8.4 # renovate: depName=suzuki-shunsuke/aqua-registry
+
+packages:
+- name: CircleCI-Public/circleci-cli
+  registry: standard
+  version: v0.1.15932 # renovate: depName=CircleCI-Public/circleci-cli

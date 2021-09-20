@@ -1,0 +1,79 @@
+description: >
+  Install aqua.
+parameters:
+  version:
+    type: string
+    description: >
+      aqua version.
+  install_path:
+    type: string
+    default: /usr/local/bin/aqua
+    description: >
+      install path
+  cache_version:
+    type: string
+    default: v1
+    description: >
+      cache version.
+steps:
+  - restore_cache:
+      keys:
+        - << parameters.cache_version >>-aqua-<< parameters.version >>
+
+  - run:
+      name: Install aqua
+      command: |
+        version="<< parameters.version >>"
+        install_path="<< parameters.install_path >>"
+
+        temp_path="/tmp/aqua-$version"
+        if [ -f "$temp_path" ]; then
+          cp "$temp_path" "$install_path" || sudo cp "$temp_path" "$install_path"
+          exit 0
+        fi
+
+        uname_os() {
+          local os
+          os=$(uname -s | tr '[:upper:]' '[:lower:]')
+          case "$os" in
+            cygwin_nt*) os="windows" ;;
+            mingw*) os="windows" ;;
+            msys_nt*) os="windows" ;;
+          esac
+          echo "$os"
+        }
+
+        uname_arch() {
+          local arch
+          arch=$(uname -m)
+          case $arch in
+            x86_64) arch="amd64" ;;
+            aarch64) arch="arm64" ;;
+          esac
+          echo ${arch}
+        }
+
+        OS="$(uname_os)"
+        ARCH="$(uname_arch)"
+
+        mkdir -p "$(dirname "$install_path")"
+
+        URL=https://github.com/suzuki-shunsuke/aqua/releases/download/${version}/aqua_${OS}_${ARCH}.tar.gz
+        tempdir=$(mktemp -d)
+        echo "===> Downloading $URL ..." >&2
+        curl --fail -L "$URL" -o "$tempdir/aqua_${OS}_${ARCH}.tar.gz"
+
+        (cd "$tempdir"; tar xvzf "aqua_${OS}_${ARCH}.tar.gz" > /dev/null)
+        echo "===> Install aqua $version ($OS/$ARCH) to $install_path" >&2
+
+        cp "$tempdir/aqua" "/tmp/aqua-$version"
+        mv "$tempdir/aqua" "$install_path" || sudo mv "$tempdir/aqua" "$install_path"
+        rm -R "$tempdir"
+
+  - save_cache:
+      key: << parameters.cache_version >>-aqua-<< parameters.version >>
+      paths:
+        - /tmp/aqua-<< parameters.version >>
+
+  - run:
+      command: rm /tmp/aqua-<< parameters.version >>
