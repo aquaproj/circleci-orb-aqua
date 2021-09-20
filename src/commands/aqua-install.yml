@@ -7,9 +7,9 @@ parameters:
       aqua's root directory.
   aqua_install_path:
     type: string
-    default: /usr/local/bin
+    default: /usr/local/bin/aqua
     description: >
-      aqua install directory
+      aqua install path
   cache_version:
     type: string
     default: v1
