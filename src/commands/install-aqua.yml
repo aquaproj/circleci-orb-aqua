@@ -13,7 +13,7 @@ parameters:
 steps:
   - restore_cache:
       keys:
-        - aqua-<< parameters.version >>
+        - v1-aqua-<< parameters.version >>
 
   - run:
       name: Install aqua
@@ -66,7 +66,7 @@ steps:
         rm -R "$tempdir"
 
   - save_cache:
-      key: aqua-<< parameters.version >>
+      key: v1-aqua-<< parameters.version >>
       paths:
         - /tmp/aqua-<< parameters.version >>
 
