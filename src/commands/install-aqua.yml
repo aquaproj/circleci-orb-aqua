@@ -59,11 +59,8 @@ steps:
         (cd "$tempdir"; tar xvzf "aqua_${OS}_${ARCH}.tar.gz" > /dev/null)
         echo "===> Install aqua $version ($OS/$ARCH) to $install_path" >&2
 
-        mv "$tempdir/aqua" "$install_path"
-
+        mv "$tempdir/aqua" "$install_path" || sudo mv "$tempdir/aqua" "$install_path"
         rm -R "$tempdir"
-
-        chmod a+x "$install_path"
 
   - save_cache:
       key: aqua-<< parameters.version >>
