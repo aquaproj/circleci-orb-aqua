@@ -15,6 +15,7 @@ workflows:
               only: /.*/
       - orb/test:
           name: test
+          context: suzuki-shunsuke
           workflows: ls tests/*
           requires:
             - pack
@@ -23,6 +24,7 @@ workflows:
               only: /.*/
           
       - orb/publish-dev:
+          context: orb-publishing
           name: publish-dev
           orb_path: suzuki-shunsuke/aqua
           requires:
@@ -31,6 +33,7 @@ workflows:
 
       - orb/publish:
           name: publish
+          context: orb-publishing
           orb_path: suzuki-shunsuke/aqua
           requires:
             - pack
