@@ -29,6 +29,14 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - aqua/install-aqua:
+          version: v0.7.1
+      - aqua/aqua-install:
+          aqua_root_dir: /home/circleci/.aqua
+      - run:
+          command: |
+            command -v circleci
+            circleci version
 
 workflows:
   # Prior to producing a development orb (which requires credentials) basic validation, linting, and even unit testing can be performed.
@@ -69,7 +77,8 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       # Run any integration tests defined within the `jobs` key.
-      - integration-test-1
+      - integration-test-1:
+          context: suzuki-shunsuke
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       # as that will determine whether a patch, minor or major
@@ -87,5 +96,4 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - main
