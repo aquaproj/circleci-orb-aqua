@@ -21,7 +21,9 @@ steps:
         version="<< parameters.version >>"
         install_path="<< parameters.install_path >>"
 
-        if [ -f "$install_path" ]; then
+        temp_path="/tmp/aqua-$version"
+        if [ -f "$temp_path" ]; then
+          mv "$temp_path" "$install_path" || sudo mv "$temp_path" "$install_path"
           exit 0
         fi
 
@@ -59,10 +61,14 @@ steps:
         (cd "$tempdir"; tar xvzf "aqua_${OS}_${ARCH}.tar.gz" > /dev/null)
         echo "===> Install aqua $version ($OS/$ARCH) to $install_path" >&2
 
+        cp "$tempdir/aqua" "/tmp/aqua-$version"
         mv "$tempdir/aqua" "$install_path" || sudo mv "$tempdir/aqua" "$install_path"
         rm -R "$tempdir"
 
   - save_cache:
       key: aqua-<< parameters.version >>
       paths:
-        - << parameters.install_path >>
+        - /tmp/aqua-<< parameters.version >>
+
+  - run:
+      command: rm /tmp/aqua-<< parameters.version >>
