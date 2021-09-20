@@ -10,16 +10,16 @@ parameters:
     default: /usr/local/bin/aqua
     description: >
       aqua install path
-  cache_version:
-    type: string
-    default: v1
-    description: >
-      cache version.
   config:
     type: string
     default: aqua.yaml
     description: >
       aqua's configuration file path.
+  cache_version:
+    type: string
+    default: v1
+    description: >
+      cache version.
 steps:
   - restore_cache:
       keys:

@@ -10,10 +10,15 @@ parameters:
     default: /usr/local/bin/aqua
     description: >
       install path
+  cache_version:
+    type: string
+    default: v1
+    description: >
+      cache version.
 steps:
   - restore_cache:
       keys:
-        - v1-aqua-<< parameters.version >>
+        - << parameters.cache_version >>-aqua-<< parameters.version >>
 
   - run:
       name: Install aqua
@@ -66,7 +71,7 @@ steps:
         rm -R "$tempdir"
 
   - save_cache:
-      key: v1-aqua-<< parameters.version >>
+      key: << parameters.cache_version >>-aqua-<< parameters.version >>
       paths:
         - /tmp/aqua-<< parameters.version >>
 
