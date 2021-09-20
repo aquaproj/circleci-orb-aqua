@@ -2,7 +2,7 @@
 version: 2.1
 
 orbs:
-  orb: suzuki-shunsuke/orb@0.1.1
+  orb: suzuki-shunsuke/orb@dev:pr-6
   # aqua-installer: suzuki-shunsuke/aqua-installer@0.1.0
 
 workflows:
