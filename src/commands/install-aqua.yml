@@ -1,0 +1,23 @@
+description: >
+  Install aqua.
+parameters:
+  version:
+    type: string
+    description: >
+      aqua version.
+  install_path:
+    type: string
+    default: /usr/local/bin/aqua
+    description: >
+      install path
+steps:
+  - restore_cache:
+      keys:
+        - aqua-{{ parameters.version }}
+  - run:
+      name: Install aqua
+      command: << include(scripts/aqua-installer) >>
+  - save_cache:
+      key: aqua-<< parameters.version >>
+      paths:
+        - << parameters.install_path >>

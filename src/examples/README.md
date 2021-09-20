@@ -8,6 +8,6 @@ View the included _[example.yml](./example.yml)_ example.
 
 Usage examples should contain clear use-case based example configurations for using the orb.
 
-
 ## See:
- - [Providing Usage examples](https://circleci.com/docs/2.0/orb-author/#providing-usage-examples-of-orbs)
+
+- [Providing Usage examples](https://circleci.com/docs/2.0/orb-author/#providing-usage-examples-of-orbs)
