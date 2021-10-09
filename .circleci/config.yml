@@ -43,14 +43,21 @@ executors:
   circleci:
     docker:
       - image: circleci/circleci-cli:0.1.15973-alpine
+commands:
+  pack:
+    steps:
+      - run:
+          command: circleci orb pack src --skip-update-check > orb.yml
 jobs:
   publish-dev:
     executor: circleci
     steps:
+      - pack
       - orb/publish-dev:
           orb_path: suzuki-shunsuke/aqua
   publish:
     executor: circleci
     steps:
+      - pack
       - orb/publish:
           orb_path: suzuki-shunsuke/aqua
