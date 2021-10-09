@@ -24,7 +24,7 @@ workflows:
               only: /.*/
           
       - orb/publish-dev:
-          context: orb-publishing
+          context: suzuki-shunsuke
           name: publish-dev
           orb_path: suzuki-shunsuke/aqua
           requires:
@@ -33,7 +33,7 @@ workflows:
 
       - orb/publish:
           name: publish
-          context: orb-publishing
+          context: suzuki-shunsuke
           orb_path: suzuki-shunsuke/aqua
           requires:
             - pack
