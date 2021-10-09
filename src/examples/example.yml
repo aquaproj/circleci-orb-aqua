@@ -16,9 +16,14 @@ usage:
         - run:
             name: Install requirements
             command: |
-              apk add curl
+              apk add curl git
         - checkout
         - aqua/install-aqua:
-            version: v0.7.1
+            version: v0.7.6
         - aqua/aqua-install:
             aqua_root_dir: /root/.aqua
+        - run:
+            command: |
+              export PATH=$HOME/.aqua/bin:$PATH
+              command -v circleci
+              circleci version
