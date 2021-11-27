@@ -3,7 +3,7 @@ version: 2.1
 
 orbs:
   orb: suzuki-shunsuke/orb@0.1.3
-  # aqua-installer: suzuki-shunsuke/aqua-installer@0.1.0
+  # aqua-installer: aquaproj/aqua-installer@0.1.0
 
 workflows:
   build:
@@ -15,7 +15,7 @@ workflows:
               only: /.*/
       - orb/test:
           name: test
-          context: suzuki-shunsuke
+          context: circleci-orb-aqua
           workflows: ls tests/*
           requires:
             - pack
@@ -24,13 +24,13 @@ workflows:
               only: /.*/
 
       - publish-dev:
-          context: suzuki-shunsuke
+          context: circleci-orb-aqua
           requires:
             - pack
             - test
 
       - publish:
-          context: suzuki-shunsuke
+          context: circleci-orb-aqua
           requires:
             - pack
             - test
@@ -55,11 +55,11 @@ jobs:
       - checkout
       - pack
       - orb/publish-dev:
-          orb_path: suzuki-shunsuke/aqua
+          orb_path: aquaproj/aqua
   publish:
     executor: circleci
     steps:
       - checkout
       - pack
       - orb/publish:
-          orb_path: suzuki-shunsuke/aqua
+          orb_path: aquaproj/aqua
