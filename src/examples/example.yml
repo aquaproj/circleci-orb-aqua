@@ -3,7 +3,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    aqua: aquaproj/aqua@0.1.0
+    aqua: aquaproj/aqua@0.2.1
   workflows:
     build:
       jobs:
