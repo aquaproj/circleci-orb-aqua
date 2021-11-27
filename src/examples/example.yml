@@ -3,7 +3,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    aqua: suzuki-shunsuke/aqua@0.1.0
+    aqua: aquaproj/aqua@0.1.0
   workflows:
     build:
       jobs:
@@ -19,7 +19,7 @@ usage:
               apk add curl git
         - checkout
         - aqua/install-aqua:
-            version: v0.7.6
+            version: v0.7.16
         - aqua/aqua-install:
             aqua_root_dir: /root/.aqua
         - run:

@@ -5,4 +5,4 @@ description: >
   Cache aqua and installed tools.
 
 display:
-  source_url: "https://github.com/suzuki-shunsuke/circleci-orb-aqua"
+  source_url: "https://github.com/aquaproj/circleci-orb-aqua"

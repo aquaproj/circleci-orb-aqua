@@ -58,7 +58,7 @@ steps:
 
         mkdir -p "$(dirname "$install_path")"
 
-        URL=https://github.com/suzuki-shunsuke/aqua/releases/download/${version}/aqua_${OS}_${ARCH}.tar.gz
+        URL=https://github.com/aquaproj/aqua/releases/download/${version}/aqua_${OS}_${ARCH}.tar.gz
         tempdir=$(mktemp -d)
         echo "===> Downloading $URL ..." >&2
         curl --fail -L "$URL" -o "$tempdir/aqua_${OS}_${ARCH}.tar.gz"
