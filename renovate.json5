@@ -3,6 +3,6 @@
   platformAutomerge: true,
   extends: [
     "config:base",
-    "github>aquaproj/aqua-renovate-config#1.0.0",
+    "github>aquaproj/aqua-renovate-config#1.1.0",
   ],
 }
