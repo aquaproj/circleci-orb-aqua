@@ -1,13 +1,13 @@
 description: >
-  Install aqua.
+  Install clivm.
 parameters:
   version:
     type: string
     description: >
-      aqua version.
+      clivm version.
   install_path:
     type: string
-    default: /usr/local/bin/aqua
+    default: /usr/local/bin/clivm
     description: >
       install path
   cache_version:
@@ -18,15 +18,15 @@ parameters:
 steps:
   - restore_cache:
       keys:
-        - << parameters.cache_version >>-aqua-<< parameters.version >>
+        - << parameters.cache_version >>-clivm-<< parameters.version >>
 
   - run:
-      name: Install aqua
+      name: Install clivm
       command: |
         version="<< parameters.version >>"
         install_path="<< parameters.install_path >>"
 
-        temp_path="/tmp/aqua-$version"
+        temp_path="/tmp/clivm-$version"
         if [ -f "$temp_path" ]; then
           cp "$temp_path" "$install_path" || sudo cp "$temp_path" "$install_path"
           exit 0
@@ -58,22 +58,22 @@ steps:
 
         mkdir -p "$(dirname "$install_path")"
 
-        URL=https://github.com/clivm/aqua/releases/download/${version}/aqua_${OS}_${ARCH}.tar.gz
+        URL=https://github.com/clivm/clivm/releases/download/${version}/clivm_${OS}_${ARCH}.tar.gz
         tempdir=$(mktemp -d)
         echo "===> Downloading $URL ..." >&2
-        curl --fail -L "$URL" -o "$tempdir/aqua_${OS}_${ARCH}.tar.gz"
+        curl --fail -L "$URL" -o "$tempdir/clivm_${OS}_${ARCH}.tar.gz"
 
-        (cd "$tempdir"; tar xvzf "aqua_${OS}_${ARCH}.tar.gz" > /dev/null)
-        echo "===> Install aqua $version ($OS/$ARCH) to $install_path" >&2
+        (cd "$tempdir"; tar xvzf "clivm_${OS}_${ARCH}.tar.gz" > /dev/null)
+        echo "===> Install clivm $version ($OS/$ARCH) to $install_path" >&2
 
-        cp "$tempdir/aqua" "/tmp/aqua-$version"
-        mv "$tempdir/aqua" "$install_path" || sudo mv "$tempdir/aqua" "$install_path"
+        cp "$tempdir/clivm" "/tmp/clivm-$version"
+        mv "$tempdir/clivm" "$install_path" || sudo mv "$tempdir/clivm" "$install_path"
         rm -R "$tempdir"
 
   - save_cache:
-      key: << parameters.cache_version >>-aqua-<< parameters.version >>
+      key: << parameters.cache_version >>-clivm-<< parameters.version >>
       paths:
-        - /tmp/aqua-<< parameters.version >>
+        - /tmp/clivm-<< parameters.version >>
 
   - run:
-      command: rm /tmp/aqua-<< parameters.version >>
+      command: rm /tmp/clivm-<< parameters.version >>

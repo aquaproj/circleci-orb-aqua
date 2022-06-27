@@ -7,10 +7,10 @@ jobs:
           command: |
             apk add git curl
       - checkout
-      - install-aqua:
+      - install-clivm:
           version: v0.7.1
-      - aqua-install:
-          aqua_root_dir: /root/.aqua
+      - clivm-install:
+          clivm_root_dir: /root/.clivm
       - run:
           command: |
             command -v circleci

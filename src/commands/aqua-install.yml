@@ -1,20 +1,20 @@
 description: >
-  Install aqua.
+  Install clivm.
 parameters:
-  aqua_root_dir:
+  clivm_root_dir:
     type: string
     description: >
-      aqua's root directory.
-  aqua_install_path:
+      clivm's root directory.
+  clivm_install_path:
     type: string
-    default: /usr/local/bin/aqua
+    default: /usr/local/bin/clivm
     description: >
-      aqua install path
+      clivm install path
   config:
     type: string
-    default: aqua.yaml
+    default: clivm.yaml
     description: >
-      aqua's configuration file path.
+      clivm's configuration file path.
   cache_version:
     type: string
     default: v1
@@ -23,19 +23,19 @@ parameters:
 steps:
   - restore_cache:
       keys:
-        - aqua-tools-<< parameters.cache_version >>-{{ checksum "<< parameters.config >>" }}
-        - aqua-tools-<< parameters.cache_version >>-
+        - clivm-tools-<< parameters.cache_version >>-{{ checksum "<< parameters.config >>" }}
+        - clivm-tools-<< parameters.cache_version >>-
   - run:
       command: |
-        export "CLIVM_ROOT_DIR=<< parameters.aqua_root_dir >>"
-        "<< parameters.aqua_install_path >>" -c "<< parameters.config >>" i
+        export "CLIVM_ROOT_DIR=<< parameters.clivm_root_dir >>"
+        "<< parameters.clivm_install_path >>" -c "<< parameters.config >>" i
   - run:
       command: |
         if [ -n "${BASH_ENV:-}" ]; then
-          echo 'export "CLIVM_ROOT_DIR=<< parameters.aqua_root_dir >>"' >> $BASH_ENV
-          echo 'export "PATH=<< parameters.aqua_root_dir >>/bin:$PATH"' >> $BASH_ENV
+          echo 'export "CLIVM_ROOT_DIR=<< parameters.clivm_root_dir >>"' >> $BASH_ENV
+          echo 'export "PATH=<< parameters.clivm_root_dir >>/bin:$PATH"' >> $BASH_ENV
         fi
   - save_cache:
-      key: aqua-tools-<< parameters.cache_version >>-{{ checksum "<< parameters.config >>" }}
+      key: clivm-tools-<< parameters.cache_version >>-{{ checksum "<< parameters.config >>" }}
       paths:
-        - << parameters.aqua_root_dir >>
+        - << parameters.clivm_root_dir >>
