@@ -27,12 +27,12 @@ steps:
         - aqua-tools-<< parameters.cache_version >>-
   - run:
       command: |
-        export "AQUA_ROOT_DIR=<< parameters.aqua_root_dir >>"
+        export "CLIVM_ROOT_DIR=<< parameters.aqua_root_dir >>"
         "<< parameters.aqua_install_path >>" -c "<< parameters.config >>" i
   - run:
       command: |
         if [ -n "${BASH_ENV:-}" ]; then
-          echo 'export "AQUA_ROOT_DIR=<< parameters.aqua_root_dir >>"' >> $BASH_ENV
+          echo 'export "CLIVM_ROOT_DIR=<< parameters.aqua_root_dir >>"' >> $BASH_ENV
           echo 'export "PATH=<< parameters.aqua_root_dir >>/bin:$PATH"' >> $BASH_ENV
         fi
   - save_cache:
