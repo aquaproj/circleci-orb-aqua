@@ -3,7 +3,7 @@ version: 2.1
 
 orbs:
   orb: suzuki-shunsuke/orb@0.1.3
-  # aqua-installer: aquaproj/aqua-installer@0.1.0
+  # aqua-installer: clivm/aqua-installer@0.1.0
 
 workflows:
   build:
@@ -55,11 +55,11 @@ jobs:
       - checkout
       - pack
       - orb/publish-dev:
-          orb_path: aquaproj/aqua
+          orb_path: clivm/aqua
   publish:
     executor: circleci
     steps:
       - checkout
       - pack
       - orb/publish:
-          orb_path: aquaproj/aqua
+          orb_path: clivm/aqua
