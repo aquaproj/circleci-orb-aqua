@@ -5,4 +5,4 @@ registries:
 packages:
 - name: CircleCI-Public/circleci-cli
   registry: standard
-  version: v0.1.19183 # renovate: depName=CircleCI-Public/circleci-cli
+  version: v0.1.19293 # renovate: depName=CircleCI-Public/circleci-cli
