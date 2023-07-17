@@ -7,10 +7,8 @@ jobs:
           command: |
             apk add git curl
       - checkout
-      - install-aqua:
-          version: v0.7.1
-      - aqua-install:
-          aqua_root_dir: /root/.aqua
+      - aqua:
+          aqua_version: v2.9.0
       - run:
           command: |
             command -v circleci
