@@ -16,11 +16,37 @@ parameters:
     default: true
     description: >
       if this is "false", the command "aqua install" is skipped
-  aqua_opts:
+  aqua_log_level:
     type: string
-    default: -l
+    default: ""
     description: >
-      aqua i's option. If you want to specify global options, please use environment variables
+      aqua's "--log-level" option
+  aqua_config:
+    type: string
+    default: ""
+    description: >
+      aqua's "--config" option
+  aqua_only_link:
+    type: boolean
+    default: true
+    description: >
+      aqua i's "--only-link" option
+  aqua_all:
+    type: boolean
+    default: false
+    description: >
+      aqua i's "--all" option
+  aqua_tags:
+    type: string
+    default: ""
+    description: >
+      aqua i's "--tags" option
+  aqua_exclude_tags:
+    type: string
+    default: ""
+    description: >
+      aqua i's "--exclude-tags" option
+
   policy_allow:
     type: string
     default: ""
@@ -39,10 +65,15 @@ steps:
       name: Install aqua
       environment:
         AQUA_VERSION: << parameters.aqua_version >>
-        AQUA_OPTS: << parameters.aqua_opts >>
         POLICY_ALLOW: << parameters.policy_allow >>
         ENABLE_AQUA_INSTALL: << parameters.enable_aqua_install >>
         WORKING_DIRECTORY: << parameters.working_directory >>
+        LOG_LEVEL: << parameters.aqua_log_level >>
+        CONFIG: << parameters.aqua_config >>
+        ONLY_LINK: << parameters.aqua_only_link >>
+        ALL: << parameters.aqua_all >>
+        TAGS: << parameters.aqua_tags >>
+        EXCLUDE_TAGS: << parameters.aqua_exclude_tags >>
       command: |
         set -euo pipefail
         
@@ -66,6 +97,31 @@ steps:
           esac
           echo ${arch}
         }
+
+        is_true() {
+          val=$1
+          [ "$val" = true ] || [ "$val" = True ] || [ "$val" = y ] || [ "$val" = yes ] || [ "$val" = on ] || [ "$val" = 1 ]
+        }
+
+        if [ -n "$LOG_LEVEL" ]; then
+          export "AQUA_LOG_LEVEL=$LOG_LEVEL"
+        fi
+        if [ -n "$CONFIG" ]; then
+          export "AQUA_CONFIG=$CONFIG"
+        fi
+        opts=""
+        if is_true "$ONLY_LINK"; then
+          opts=-l
+        fi
+        if is_true "$ALL"; then
+          opts="-a $opts"
+        fi
+        if [ -n "$TAGS" ]; then
+          opts="-t \"$TAGS\" $opts"
+        fi
+        if [ -n "$EXCLUDE_TAGS" ]; then
+          opts="-exclude-tags \"$EXCLUDE_TAGS\" $opts"
+        fi
         
         OS="$(uname_os)"
         ARCH="$(uname_arch)"
@@ -129,7 +185,7 @@ steps:
           aqua policy allow "$POLICY_ALLOW"
         fi
 
-        if [ "$ENABLE_AQUA_INSTALL" = true ] || [ "$ENABLE_AQUA_INSTALL" = True ] || [ "$ENABLE_AQUA_INSTALL" = y ] || [ "$ENABLE_AQUA_INSTALL" = yes ] || [ "$ENABLE_AQUA_INSTALL" = on ] || [ "$ENABLE_AQUA_INSTALL" = 1 ]; then
-          echo 'aqua i $AQUA_OPTS' >&2
-          aqua i $AQUA_OPTS
+        if is_true "$ENABLE_AQUA_INSTALL"; then
+          echo "aqua i $opts" >&2
+          aqua i $opts
         fi
