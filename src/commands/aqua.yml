@@ -68,11 +68,11 @@ steps:
         
         bootstrap_version=v2.9.1
         checksums="0ad1ec9b0f9250039f8c5c90a7e73a0b2c55ac904c5904742d47805d1c3a2654  aqua_linux_arm64.tar.gz
-674866ea9d925bb033d0fceaa1fd3a0890c84f035db2a6f00782b8cd0638cea2  aqua_windows_arm64.tar.gz
-a87952cc7b3520346aa0887476465d03ca6e57c2f06bfa116707cc3bf50b3eaa  aqua_darwin_arm64.tar.gz
-c6bdc60187b7e5a703ab03d47e310aef91c776cefc0c136ecc9b9a27be258051  aqua_linux_amd64.tar.gz
-e69869d5de833fe8de6b196e592b7f10ee47c24316cd440e3c2d6506114fc2f0  aqua_darwin_amd64.tar.gz
-f58824ca851f023494e824c43b1516da5296235bd376446f13353fbbfa1b4f14  aqua_windows_amd64.tar.gz"
+        674866ea9d925bb033d0fceaa1fd3a0890c84f035db2a6f00782b8cd0638cea2  aqua_windows_arm64.tar.gz
+        a87952cc7b3520346aa0887476465d03ca6e57c2f06bfa116707cc3bf50b3eaa  aqua_darwin_arm64.tar.gz
+        c6bdc60187b7e5a703ab03d47e310aef91c776cefc0c136ecc9b9a27be258051  aqua_linux_amd64.tar.gz
+        e69869d5de833fe8de6b196e592b7f10ee47c24316cd440e3c2d6506114fc2f0  aqua_darwin_amd64.tar.gz
+        f58824ca851f023494e824c43b1516da5296235bd376446f13353fbbfa1b4f14  aqua_windows_amd64.tar.gz"
         
         filename=aqua_${OS}_${ARCH}.tar.gz
         URL=https://github.com/aquaproj/aqua/releases/download/$bootstrap_version/$filename
