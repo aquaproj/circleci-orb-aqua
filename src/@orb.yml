@@ -2,7 +2,6 @@ version: 2.1
 
 description: >
   Install aqua and run `aqua install`.
-  Cache aqua and installed tools.
 
 display:
   source_url: "https://github.com/aquaproj/circleci-orb-aqua"

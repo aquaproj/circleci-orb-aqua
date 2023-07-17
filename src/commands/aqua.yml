@@ -1,0 +1,135 @@
+description: >
+  Install aqua and run aqua install.
+
+  1. Install aqua
+  2. Add AQUA_ROOT_DIR/bin to PATH via $BASH_ENV
+  3. On Windows, add AQUA_ROOT_DIR/bat to PATH via $BASH_ENV
+  4. (Optional) Run "aqua policy allow"
+  5. (Optional) Run "aqua install"
+parameters:
+  aqua_version:
+    type: string
+    description: >
+      aqua version.
+  enable_aqua_install:
+    type: boolean
+    default: true
+    description: >
+      if this is "false", the command "aqua install" is skipped
+  aqua_opts:
+    type: string
+    default: -l
+    description: >
+      aqua i's option. If you want to specify global options, please use environment variables
+  policy_allow:
+    type: string
+    default: ""
+    description: >
+      If this is "true", "aqua policy allow" is run without any argument.
+      If this is empty (default), "aqua policy allow" isn't run.
+      If this isn't "true", "aqua policy allow << parameters.policy_allow >>" is run
+
+  working_directory:
+    type: string
+    default: ""
+    description: >
+      working directory where "aqua install" is run
+steps:
+  - run:
+      name: Install aqua
+      environment:
+        AQUA_VERSION: << parameters.aqua_version >>
+        AQUA_OPTS: << parameters.aqua_opts >>
+        POLICY_ALLOW: << parameters.policy_allow >>
+        ENABLE_AQUA_INSTALL: << parameters.enable_aqua_install >>
+        WORKING_DIRECTORY: << parameters.working_directory >>
+      command: |
+        set -euo pipefail
+        
+        uname_os() {
+          local os
+          os=$(uname -s | tr '[:upper:]' '[:lower:]')
+          case "$os" in
+            cygwin_nt*) os="windows" ;;
+            mingw*) os="windows" ;;
+            msys_nt*) os="windows" ;;
+          esac
+          echo "$os"
+        }
+        
+        uname_arch() {
+          local arch
+          arch=$(uname -m)
+          case $arch in
+            x86_64) arch="amd64" ;;
+            aarch64) arch="arm64" ;;
+          esac
+          echo ${arch}
+        }
+        
+        OS="$(uname_os)"
+        ARCH="$(uname_arch)"
+        
+        install_path=${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin/aqua
+        if [ "$OS" = windows ]; then
+          install_path=${AQUA_ROOT_DIR:-$HOME/AppData/Local/aquaproj-aqua}/bin/aqua.exe
+        fi
+        
+        bootstrap_version=v2.9.1
+        checksums="0ad1ec9b0f9250039f8c5c90a7e73a0b2c55ac904c5904742d47805d1c3a2654  aqua_linux_arm64.tar.gz
+        674866ea9d925bb033d0fceaa1fd3a0890c84f035db2a6f00782b8cd0638cea2  aqua_windows_arm64.tar.gz
+        a87952cc7b3520346aa0887476465d03ca6e57c2f06bfa116707cc3bf50b3eaa  aqua_darwin_arm64.tar.gz
+        c6bdc60187b7e5a703ab03d47e310aef91c776cefc0c136ecc9b9a27be258051  aqua_linux_amd64.tar.gz
+        e69869d5de833fe8de6b196e592b7f10ee47c24316cd440e3c2d6506114fc2f0  aqua_darwin_amd64.tar.gz
+        f58824ca851f023494e824c43b1516da5296235bd376446f13353fbbfa1b4f14  aqua_windows_amd64.tar.gz"
+        
+        filename=aqua_${OS}_${ARCH}.tar.gz
+        URL=https://github.com/aquaproj/aqua/releases/download/$bootstrap_version/$filename
+        
+        tempdir=$(mktemp -d)
+        echo "===> Installing aqua $bootstrap_version for bootstrapping..." >&2
+        echo "===> Downloading $URL ..." >&2
+        curl --fail -L "$URL" -o "$tempdir/$filename"
+        
+        pwd=$PWD
+        cd "$tempdir"
+        
+        echo "===> Verifying checksum of aqua $bootstrap_version ..." >&2
+        if command -v sha256sum > /dev/null 2>&1; then
+          echo "$checksums" | grep "$filename" | sha256sum -c
+        elif command -v shasum > /dev/null 2>&1; then
+          echo "$checksums" | grep "$filename" | shasum -a 256 -c
+        else
+        	echo "Skipped checksum verification of aqua $bootstrap_version, because both sha256sum and shasum aren't found" >&2
+        fi
+        
+        tar xvzf "$filename" > /dev/null
+        chmod a+x aqua
+
+        export "PATH=$(./aqua root-dir)/bin::$PATH"
+        echo "export \"PATH=$(./aqua root-dir)/bin:$PATH\"" >> "$BASH_ENV"
+        if [ "$OS" = windows ]; then
+          export "PATH=$(./aqua root-dir)/bat:$PATH"
+          echo "export \"PATH=$(./aqua root-dir)/bat:$PATH\"" >> "$BASH_ENV"
+        fi
+
+        echo "===> $tempdir/aqua update-aqua $AQUA_VERSION" >&2
+        ./aqua update-aqua "$AQUA_VERSION"
+        
+        cd "$pwd/$WORKING_DIRECTORY"
+        rm -R "$tempdir"
+
+        if [ "$POLICY_ALLOW" = true ]; then
+          echo "===> aqua policy allow" >&2
+          aqua policy allow
+          exit 0
+        fi
+        if [ -n "$POLICY_ALLOW" ]; then
+          echo '===> aqua policy allow $POLICY_ALLOW' >&2
+          aqua policy allow "$POLICY_ALLOW"
+        fi
+
+        if [ "$ENABLE_AQUA_INSTALL" = true ] || [ "$ENABLE_AQUA_INSTALL" = True ] || [ "$ENABLE_AQUA_INSTALL" = y ] || [ "$ENABLE_AQUA_INSTALL" = yes ] || [ "$ENABLE_AQUA_INSTALL" = on ] || [ "$ENABLE_AQUA_INSTALL" = 1 ]; then
+          echo 'aqua i $AQUA_OPTS' >&2
+          aqua i $AQUA_OPTS
+        fi
