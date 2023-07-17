@@ -1,5 +1,11 @@
 description: >
   Install aqua and run aqua install.
+
+  1. Install aqua
+  2. Add AQUA_ROOT_DIR/bin to PATH via $BASH_ENV
+  3. On Windows, add AQUA_ROOT_DIR/bat to PATH via $BASH_ENV
+  4. (Optional) Run "aqua policy allow"
+  5. (Optional) Run "aqua install"
 parameters:
   aqua_version:
     type: string
@@ -9,7 +15,7 @@ parameters:
     type: boolean
     default: true
     description: >
-      if this is "false", executing aqua i and updating GITHUB_PATH are skipped
+      if this is "false", the command "aqua install" is skipped
   aqua_opts:
     type: string
     default: -l
@@ -27,7 +33,7 @@ parameters:
     type: string
     default: ""
     description: >
-      working directory
+      working directory where "aqua install" is run
 steps:
   - run:
       name: Install aqua
