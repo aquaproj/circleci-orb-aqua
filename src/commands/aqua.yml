@@ -16,10 +16,12 @@ parameters:
     description: >
       aqua i's option. If you want to specify global options, please use environment variables
   policy_allow:
-    type: boolean
-    default: true
+    type: string
     description: >
-      if this is "false", executing aqua i and updating GITHUB_PATH are skipped
+      If this is "true", "aqua policy allow" is run without any argument.
+      If this is empty (default), "aqua policy allow" isn't run.
+      If this isn't "true", "aqua policy allow << parameters.policy_allow >>" is run
+
   working_directory:
     type: string
     default: ""
