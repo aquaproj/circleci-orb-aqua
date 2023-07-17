@@ -123,9 +123,7 @@ steps:
           aqua policy allow "$POLICY_ALLOW"
         fi
 
-        echo "ENABLE_AQUA_INSTALL: $ENABLE_AQUA_INSTALL" >&2
-
-        if [ "$ENABLE_AQUA_INSTALL" = true ]; then
+        if [ "$ENABLE_AQUA_INSTALL" = true ] || [ "$ENABLE_AQUA_INSTALL" = True ] || [ "$ENABLE_AQUA_INSTALL" = y ] || [ "$ENABLE_AQUA_INSTALL" = yes ] || [ "$ENABLE_AQUA_INSTALL" = on ] || [ "$ENABLE_AQUA_INSTALL" = 1 ]; then
           echo 'aqua i $AQUA_OPTS' >&2
           aqua i $AQUA_OPTS
         fi
