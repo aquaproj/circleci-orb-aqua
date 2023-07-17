@@ -5,7 +5,7 @@
 [![License](http://img.shields.io/badge/license-mit-blue.svg?style=flat-square)](https://raw.githubusercontent.com/aquaproj/circleci-orb-aqua/main/LICENSE)
 
 CircleCI Orb for [aquaproj/aqua](https://github.com/aquaproj/aqua).
-Install aqua and run `aqua install` and cache them.
+Install aqua and run `aqua install`.
 
 https://circleci.com/orbs/registry/orb/aquaproj/aqua
 
