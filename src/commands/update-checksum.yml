@@ -1,0 +1,93 @@
+description: >
+  Update aqua-checksums.json
+parameters:
+  prune:
+    type: boolean
+    default: false
+    description: >
+      aqua update-checksum's "-prune" option
+
+  aqua_log_level:
+    type: string
+    default: ""
+    description: >
+      aqua's "--log-level" option
+
+  all:
+    type: boolean
+    default: false
+    description: >
+      aqua update-checksum's "-all" option
+
+  aqua_config:
+    type: string
+    default: ""
+    description: >
+      aqua's "--config" option
+
+  skip_push:
+    type: boolean
+    default: false
+
+  working_directory:
+    type: string
+    default: .
+    description: >
+      working directory where "aqua update-checksum" is run
+steps:
+  - run:
+      name: Update aqua-checksums.json
+      working_directory: << parameters.working_directory >>
+      environment:
+        LOG_LEVEL: << parameters.aqua_log_level >>
+        SKIP_PUSH: << parameters.skip_push >>
+        CONFIG: << parameters.aqua_config >>
+        ALL: << parameters.all >>
+        PRUNE: << parameters.prune >>
+      command: |
+        set -euo pipefail
+
+        is_true() {
+          val=$1
+          [ "$val" = true ] || [ "$val" = True ] || [ "$val" = y ] || [ "$val" = yes ] || [ "$val" = on ] || [ "$val" = 1 ]
+        }
+
+        if [ -n "$LOG_LEVEL" ]; then
+          export "AQUA_LOG_LEVEL=$LOG_LEVEL"
+        fi
+        if [ -n "$CONFIG" ]; then
+          export "AQUA_CONFIG=$CONFIG"
+        fi
+
+        aqua_opts=""
+        if is_true "$PRUNE"; then
+          aqua_opts=-prune
+        fi
+        if is_true "$ALL"; then
+          aqua_opts="-a $aqua_opts"
+        fi
+
+        files=$(aqua update-checksum $aqua_opts)
+        
+        if [ -z "$files" ]; then
+          echo "[INFO] No file is created and updated" >&2
+          exit 0
+        fi
+
+        if is_true "$SKIP_PUSH"; then
+          echo "[ERROR] checksum files aren't latest" >&2
+          exit 1
+        fi
+
+        if ! ghcp -v; then
+          echo "[ERROR] int128/ghcp isn't installed. To push a commit, ghcp is required." >&2
+          exit 1
+        fi
+
+        echo "[INFO] Pushed files: $files" >&2
+
+        branch="$CIRCLE_BRANCH"
+        repo="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+        echo "$files" | xargs ghcp commit -r "$repo" -b "$branch" \
+          -m "chore(aqua): update checksum files"
+        exit 1
