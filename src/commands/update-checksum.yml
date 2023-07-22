@@ -1,5 +1,16 @@
 description: >
-  Update aqua-checksums.json
+  Run the command `aqua update-checksum` and push a commit to a remote branch.
+
+  Requirements:
+
+  - aqua
+
+  If skip_push is false (default), the following things are also required.
+
+  - int128/ghcp: https://github.com/int128/ghcp
+  - Environment variable `GITHUB_TOKEN`: GitHub Access Token
+    - `pull requests: write`
+
 parameters:
   prune:
     type: boolean
@@ -34,16 +45,23 @@ parameters:
     default: .
     description: >
       working directory where "aqua update-checksum" is run
+
+  git_root_directory:
+    type: string
+    default: .
+    description: >
+      Git root directory
 steps:
   - run:
       name: Update aqua-checksums.json
-      working_directory: << parameters.working_directory >>
       environment:
         LOG_LEVEL: << parameters.aqua_log_level >>
         SKIP_PUSH: << parameters.skip_push >>
         CONFIG: << parameters.aqua_config >>
         ALL: << parameters.all >>
         PRUNE: << parameters.prune >>
+        ROOT_DIRECTORY: << parameters.git_root_directory >>
+        WORKING_DIRECTORY: << parameters.working_directory >>
       command: |
         set -euo pipefail
 
@@ -67,6 +85,10 @@ steps:
           aqua_opts="-a $aqua_opts"
         fi
 
+        git_root_dir=$(cd "$ROOT_DIRECTORY" && pwd)
+
+        cd "$WORKING_DIRECTORY"
+
         files=$(aqua update-checksum $aqua_opts)
         
         if [ -z "$files" ]; then
@@ -84,14 +106,12 @@ steps:
           exit 1
         fi
 
-        git_root_dir=$(git rev-parse --show-toplevel)
-
         echo "[DEBUG] Git root directory: $git_root_dir" >&2
 
         echo "[INFO] Pushing files $files" >&2
 
         branch="$CIRCLE_BRANCH"
         repo="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-        echo "$files" | sed "s|^$git_root_dir/||" | xargs ghcp commit -r "$repo" -b "$branch" \
+        echo "$files" | sed "s|^$git_root_dir/||" | xargs ghcp -C "$ROOT_DIRECTORY" commit -r "$repo" -b "$branch" \
           -m "chore(aqua): update checksum files"
         exit 1
