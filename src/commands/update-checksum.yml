@@ -3,7 +3,7 @@ description: >
 
   Requirements:
 
-  - aqua
+  - aqua >= v2.10.0
 
   If skip_push is false (default), the following things are also required.
 
@@ -50,7 +50,8 @@ parameters:
     type: string
     default: .
     description: >
-      Git root directory
+      Git root directory.
+      Either an absolute path or a relative path from the current directory.
 steps:
   - run:
       name: Update aqua-checksums.json
