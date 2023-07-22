@@ -9,7 +9,7 @@ description: >
 
   - int128/ghcp: https://github.com/int128/ghcp
   - Environment variable `GITHUB_TOKEN`: GitHub Access Token
-    - `pull requests: write`
+    - `contents: write`
 
 parameters:
   prune:
@@ -112,6 +112,6 @@ steps:
 
         branch="$CIRCLE_BRANCH"
         repo="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-        echo "$files" | sed "s|^$git_root_dir/||" | xargs ghcp -C "$ROOT_DIRECTORY" commit -r "$repo" -b "$branch" \
+        echo "$files" | sed "s|^$git_root_dir/||" | xargs ghcp -C "$git_root_dir" commit -r "$repo" -b "$branch" \
           -m "chore(aqua): update checksum files"
         exit 1
