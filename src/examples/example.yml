@@ -20,7 +20,7 @@ usage:
               apt install -y git curl
         - checkout
         - aqua/aqua:
-            version: v2.9.1
+            aqua_version: v2.9.1
         - run:
             command: |
               command -v circleci
@@ -37,7 +37,7 @@ usage:
               apt install -y git curl
         - checkout
         - aqua/aqua:
-            version: v2.10.0
+            aqua_version: v2.10.0
         - aqua/update-checksum
 
     update-checksum-foo:
@@ -52,7 +52,7 @@ usage:
         - checkout:
             path: yoo
         - aqua/aqua:
-            version: v2.10.0
+            aqua_version: v2.10.0
         - aqua/update-checksum:
             git_root_directory: yoo
             working_directory: yoo/foo
