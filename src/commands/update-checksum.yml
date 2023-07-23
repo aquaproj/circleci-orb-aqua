@@ -1,0 +1,127 @@
+description: >
+  Run the command `aqua update-checksum` and push a commit to a remote branch.
+
+  Requirements:
+
+  - aqua >= v2.10.0
+
+  If skip_push is false (default), the following things are also required.
+
+  - int128/ghcp: https://github.com/int128/ghcp
+  - Environment variable `GITHUB_TOKEN`: GitHub Access Token
+    - `contents: write`
+
+parameters:
+  prune:
+    type: boolean
+    default: false
+    description: >
+      aqua update-checksum's "-prune" option
+
+  aqua_log_level:
+    type: string
+    default: ""
+    description: >
+      aqua's "--log-level" option
+
+  all:
+    type: boolean
+    default: false
+    description: >
+      aqua update-checksum's "-all" option
+
+  aqua_config:
+    type: string
+    default: ""
+    description: >
+      aqua's "--config" option
+
+  skip_push:
+    type: boolean
+    default: false
+
+  working_directory:
+    type: string
+    default: .
+    description: >
+      working directory where "aqua update-checksum" is run
+
+  git_root_directory:
+    type: string
+    default: .
+    description: >
+      Git root directory.
+      Either an absolute path or a relative path from the current directory.
+steps:
+  - run:
+      name: Update aqua-checksums.json
+      environment:
+        LOG_LEVEL: << parameters.aqua_log_level >>
+        SKIP_PUSH: << parameters.skip_push >>
+        CONFIG: << parameters.aqua_config >>
+        ALL: << parameters.all >>
+        PRUNE: << parameters.prune >>
+        ROOT_DIRECTORY: << parameters.git_root_directory >>
+        WORKING_DIRECTORY: << parameters.working_directory >>
+      command: |
+        set -euo pipefail
+
+        if ! aqua -v; then
+          echo "[ERROR] aqua is required" >&2
+          exit 1
+        fi
+        if ! aqua help info >/dev/null; then
+          echo "[ERROR] aqua >= v2.10.0 is required" >&2
+          exit 1
+        fi
+
+        is_true() {
+          val=$1
+          [ "$val" = true ] || [ "$val" = True ] || [ "$val" = y ] || [ "$val" = yes ] || [ "$val" = on ] || [ "$val" = 1 ]
+        }
+
+        if [ -n "$LOG_LEVEL" ]; then
+          export "AQUA_LOG_LEVEL=$LOG_LEVEL"
+        fi
+        if [ -n "$CONFIG" ]; then
+          export "AQUA_CONFIG=$CONFIG"
+        fi
+
+        aqua_opts=""
+        if is_true "$PRUNE"; then
+          aqua_opts=-prune
+        fi
+        if is_true "$ALL"; then
+          aqua_opts="-a $aqua_opts"
+        fi
+
+        git_root_dir=$(cd "$ROOT_DIRECTORY" && pwd)
+
+        cd "$WORKING_DIRECTORY"
+
+        files=$(aqua update-checksum $aqua_opts)
+        
+        if [ -z "$files" ]; then
+          echo "[INFO] No file is created and updated" >&2
+          exit 0
+        fi
+
+        if is_true "$SKIP_PUSH"; then
+          echo "[ERROR] checksum files aren't latest" >&2
+          exit 1
+        fi
+
+        if ! ghcp -v; then
+          echo "[ERROR] int128/ghcp isn't installed. To push a commit, ghcp is required." >&2
+          exit 1
+        fi
+
+        echo "[DEBUG] Git root directory: $git_root_dir" >&2
+
+        echo "[INFO] Pushing files $files" >&2
+
+        branch="$CIRCLE_BRANCH"
+        repo="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+        echo "$files" | sed "s|^$git_root_dir/||" | xargs ghcp -C "$git_root_dir" commit -r "$repo" -b "$branch" \
+          -m "chore(aqua): update checksum files"
+        exit 1
