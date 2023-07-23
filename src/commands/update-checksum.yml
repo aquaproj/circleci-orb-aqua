@@ -66,6 +66,11 @@ steps:
       command: |
         set -euo pipefail
 
+        if ! aqua help info >/dev/null; then
+          echo "[ERROR] aqua >= v2.10.0 is required" >&2
+          exit 1
+        fi
+
         is_true() {
           val=$1
           [ "$val" = true ] || [ "$val" = True ] || [ "$val" = y ] || [ "$val" = yes ] || [ "$val" = on ] || [ "$val" = 1 ]
