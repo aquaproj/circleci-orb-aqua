@@ -66,6 +66,10 @@ steps:
       command: |
         set -euo pipefail
 
+        if ! aqua -v; then
+          echo "[ERROR] aqua is required" >&2
+          exit 1
+        fi
         if ! aqua help info >/dev/null; then
           echo "[ERROR] aqua >= v2.10.0 is required" >&2
           exit 1
