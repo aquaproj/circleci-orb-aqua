@@ -162,7 +162,11 @@ steps:
         	echo "Skipped checksum verification of aqua $bootstrap_version, because both sha256sum and shasum aren't found" >&2
         fi
         
-        tar xvzf "$filename" > /dev/null
+        if [ "$OS" = windows ]; then
+        	unzip "$filename" > /dev/null
+        else
+        	tar xvzf "$filename" > /dev/null
+        fi
         chmod a+x aqua
 
         export "PATH=$(./aqua root-dir)/bin::$PATH"
