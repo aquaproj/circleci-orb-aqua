@@ -75,7 +75,8 @@ steps:
         TAGS: << parameters.aqua_tags >>
         EXCLUDE_TAGS: << parameters.aqua_exclude_tags >>
       command: |
-        set -euo pipefail
+        set -eu
+        set -o pipefail || :
         
         uname_os() {
           local os
@@ -146,14 +147,21 @@ steps:
         URL=https://github.com/aquaproj/aqua/releases/download/$bootstrap_version/$filename
         
         tempdir=$(mktemp -d)
-        echo "===> Installing aqua $bootstrap_version for bootstrapping..." >&2
-        echo "===> Downloading $URL ..." >&2
-        curl --fail -L "$URL" -o "$tempdir/$filename"
+        echo "[INFO] Installing aqua $bootstrap_version for bootstrapping..." >&2
+        echo "[INFO] Downloading $URL ..." >&2
+        if command -v curl > /dev/null 2>&1; then
+        	curl --fail -L "$URL" -o "$tempdir/$filename"
+        elif command -v wget > /dev/null 2>&1; then
+        	wget -P "$tempdir" "$URL"
+        else
+        	echo "[ERROR] Neither curl nor wget is found. Please install either curl or wget to download aqua" >&2
+        	exit 1
+        fi
         
         pwd=$PWD
         cd "$tempdir"
         
-        echo "===> Verifying checksum of aqua $bootstrap_version ..." >&2
+        echo "[INFO] Verifying checksum of aqua $bootstrap_version ..." >&2
         if command -v sha256sum > /dev/null 2>&1; then
           echo "$checksums" | grep "$filename" | sha256sum -c
         elif command -v shasum > /dev/null 2>&1; then
@@ -176,19 +184,19 @@ steps:
           echo "export \"PATH=$(./aqua root-dir)/bat:$PATH\"" >> "$BASH_ENV"
         fi
 
-        echo "===> $tempdir/aqua update-aqua $AQUA_VERSION" >&2
+        echo "[INFO] $tempdir/aqua update-aqua $AQUA_VERSION" >&2
         ./aqua update-aqua "$AQUA_VERSION"
         
         cd "$pwd/$WORKING_DIRECTORY"
         rm -R "$tempdir"
 
         if [ "$POLICY_ALLOW" = true ]; then
-          echo "===> aqua policy allow" >&2
+          echo "[INFO] aqua policy allow" >&2
           aqua policy allow
           exit 0
         fi
         if [ -n "$POLICY_ALLOW" ]; then
-          echo '===> aqua policy allow $POLICY_ALLOW' >&2
+          echo '[INFO] aqua policy allow $POLICY_ALLOW' >&2
           aqua policy allow "$POLICY_ALLOW"
         fi
 
