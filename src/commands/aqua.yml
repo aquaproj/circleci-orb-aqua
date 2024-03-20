@@ -74,6 +74,8 @@ steps:
         ALL: << parameters.aqua_all >>
         TAGS: << parameters.aqua_tags >>
         EXCLUDE_TAGS: << parameters.aqua_exclude_tags >>
+        AQUA_DISABLE_COSIGN: "true"
+        AQUA_DISABLE_SLSA: "true"
       command: |
         set -eu
         set -o pipefail || :
