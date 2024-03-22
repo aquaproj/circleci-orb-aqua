@@ -63,8 +63,6 @@ steps:
         PRUNE: << parameters.prune >>
         ROOT_DIRECTORY: << parameters.git_root_directory >>
         WORKING_DIRECTORY: << parameters.working_directory >>
-        AQUA_DISABLE_COSIGN: "true"
-        AQUA_DISABLE_SLSA: "true"
       command: |
         set -euo pipefail
 
