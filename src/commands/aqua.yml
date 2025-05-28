@@ -132,13 +132,13 @@ steps:
           install_path=${AQUA_ROOT_DIR:-$HOME/AppData/Local/aquaproj-aqua}/bin/aqua.exe
         fi
 
-        bootstrap_version=v2.27.4
-        checksums="fa04116332b454f9e06020a0afb1fa87c7cda46d2e1e97fd3d9fd93a46cec1e4  aqua_darwin_amd64.tar.gz
-        3190f8d9d1655e65322f396ae2eb493257a8df0c4ec2e4cf221c6e72bb7a4452  aqua_darwin_arm64.tar.gz
-        0e6be7a87a5466fe3b236e1909904b0407a5d8b5ce3035f1f5a108ff8f3869e8  aqua_linux_amd64.tar.gz
-        60361a4c41491f1c3a5615eb14fffa0a2f2b907bbe920a58a7fd44d840ae8941  aqua_linux_arm64.tar.gz
-        444e9da7249b456def5ac2eee9a42fee86d5e74f1a883a3c8748a36c1c857392  aqua_windows_amd64.zip
-        eb4032e839c345677b1e86552c6693fe6e6a05c669ecb3882b7d5a4df45c0dcd  aqua_windows_arm64.zip"
+        bootstrap_version=v2.51.2
+        checksums="ccca5f1c6473aa1fe67f84b244656290ac72e26998ef3479e00843b6b3e52650  aqua_darwin_amd64.tar.gz
+        4ff9a263f6125369b391d37ad6593a8b987aae672c311f61859c4db986732357  aqua_darwin_arm64.tar.gz
+        17db2da427bde293b1942e3220675ef796a67f1207daf89e6e80fea8d2bb8c22  aqua_linux_amd64.tar.gz
+        b3f0d573e762ce9d104c671b8224506c4c4a32eedd1e6d7ae1e1e39983cdb6a8  aqua_linux_arm64.tar.gz
+        bcac8677b632009ba9b561d38dddb0e07c55c5ac4690e0deb1a24b9e0cf282c8  aqua_windows_amd64.zip
+        3d76eaaf9211aeb6186f1829ff21930a798a45163fac58c4ab5aa753a3220616  aqua_windows_arm64.zip"
 
         filename=aqua_${OS}_${ARCH}.tar.gz
         if [ "$OS" = windows ]; then
