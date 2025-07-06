@@ -3,7 +3,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    aqua: aquaproj/aqua@0.3.0
+    aqua: aquaproj/aqua@1.0.2
   workflows:
     build:
       jobs:
@@ -20,7 +20,7 @@ usage:
               apt install -y git curl
         - checkout
         - aqua/aqua:
-            aqua_version: v2.9.1
+            aqua_version: v2.53.3
         - run:
             command: |
               command -v circleci
@@ -37,7 +37,7 @@ usage:
               apt install -y git curl
         - checkout
         - aqua/aqua:
-            aqua_version: v2.10.0
+            aqua_version: v2.53.3
         - aqua/update-checksum
 
     update-checksum-foo:
@@ -52,7 +52,7 @@ usage:
         - checkout:
             path: yoo
         - aqua/aqua:
-            aqua_version: v2.10.0
+            aqua_version: v2.53.3
         - aqua/update-checksum:
             git_root_directory: yoo
             working_directory: yoo/foo
