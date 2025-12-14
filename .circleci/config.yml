@@ -42,7 +42,7 @@ workflows:
 executors:
   circleci:
     docker:
-      - image: circleci/circleci-cli:0.1.33826-alpine@sha256:5adbe8a3b27175b4bea21a2baf87cf4d3a08ea350624a3d3721071ddb5d4185b
+      - image: circleci/circleci-cli:0.1.34038-alpine@sha256:4a2f7a118f5d314505b741e11737209b1976b0c2acbac6771e28be34bb39fedb
 commands:
   pack:
     steps:
