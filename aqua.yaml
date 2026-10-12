@@ -3,4 +3,4 @@ registries:
     ref: v4.574.1 # renovate: depName=aquaproj/aqua-registry
 
 packages:
-  - name: CircleCI-Public/circleci-cli@v1.4.0
+  - name: CircleCI-Public/circleci-cli@v1.5.0
